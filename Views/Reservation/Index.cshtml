@@ -1,0 +1,118 @@
+@model IEnumerable<dt102g_projekt.Models.Reservation>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Dina bokade tider";
+
+    string[] times = { "09:00-12:00", "12:00-15:00", "15:00-18:00", "18:00-21:00" };
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-action="Create">Boka ny tid</a>
+</p>
+<h3>Kommande tider</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Time)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            @if (item.userId == UserManager.GetUserId(User))
+            {
+                int res = item.Date.ToUniversalTime().CompareTo(@DateTime.Now);
+                @if (res >= 0)
+                {
+                    <tr>
+                        <td>
+                            <!--@item.Date.DayOfWeek-->
+                            @{
+                                var dayOfWeek = item.Date.ToString("dddd", new System.Globalization.CultureInfo("sv-SV"));
+                                var dayOfWeekUppercase = dayOfWeek.Substring(0, 1).ToUpper() + dayOfWeek.Substring(1);
+                            }
+                            @dayOfWeekUppercase
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @foreach (var time in times)
+                            {
+                                @if (time.StartsWith(item.Time.ToShortTimeString()))
+                                {
+                                    @time
+                                }
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.reservationId">Ändra</a> |
+                            <a asp-action="Details" asp-route-id="@item.reservationId">Detaljer</a> |
+                            <a asp-action="Delete" asp-route-id="@item.reservationId">Avboka</a>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+
+<hr>
+
+<h3>Tider som varit</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Time)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            @if (item.userId == UserManager.GetUserId(User))
+            {
+                int res = item.Date.ToUniversalTime().CompareTo(@DateTime.Now);
+                @if (res < 0)
+                {
+                    <tr>
+                        <td>
+                            @{
+                                var dayOfWeek = item.Date.ToString("dddd", new System.Globalization.CultureInfo("sv-SV"));
+                                var dayOfWeekUppercase = dayOfWeek.Substring(0, 1).ToUpper() + dayOfWeek.Substring(1);
+                            }
+                            @dayOfWeekUppercase
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @foreach (var time in times)
+                            {
+                                @if (time.StartsWith(item.Time.ToShortTimeString()))
+                                {
+                                    @time
+                                }
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.reservationId">Detaljer</a>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>

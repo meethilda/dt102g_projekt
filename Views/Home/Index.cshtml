@@ -1,0 +1,114 @@
+﻿@model IEnumerable<dt102g_projekt.Models.Reservation>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Startsida";
+
+    string[] times = { "09:00-12:00", "12:00-15:00", "15:00-18:00", "18:00-21:00" };
+    List<string> reserved_times_today = new List<string>();
+    List<string> reserved_times_tomorrow = new List<string>();
+    List<string> reserved_times_next_day = new List<string>();
+
+    var secondDay = DateTime.Now.AddDays(2).ToString("dddd", new System.Globalization.CultureInfo("sv-SV"));
+    var secondDayUpper = secondDay.Substring(0, 1).ToUpper() + secondDay.Substring(1);
+}
+
+<h1>Kommande lediga tider</h1>
+
+<div class="display_free_times">
+    <input type="radio" name="days" id="today" checked>
+    <label for="today">Idag</label>
+    <input type="radio" name="days" id="tomorrow">
+    <label for="tomorrow">Imorgon</label>
+    <input type="radio" name="days" id="next_day">
+    <label for="next_day">@secondDayUpper</label>
+
+    <div id="today_content" class="date_content">
+        @foreach (var item in Model)
+        {
+            @if (item.Date.ToShortDateString() == DateTime.Now.ToShortDateString())
+            {
+                reserved_times_today.Add(item.Time.ToShortTimeString());
+            }
+        }
+
+        @{
+            string[] reserved_array_today = reserved_times_today.ToArray();
+        }
+        @foreach (var time in times)
+        {
+            @if (Array.Exists(reserved_array_today, el => el.StartsWith(time.Substring(0, 5))))
+            {
+                <div class="column reserved-time">@time</div>
+            }
+            else
+            {
+                <div class="column">@time</div>
+            }
+        }
+    </div>
+    <div id="tomorrow_content" class="date_content">
+
+        @foreach (var item in Model)
+        {
+            @if (item.Date.ToShortDateString() == DateTime.Now.AddDays(1).ToShortDateString())
+            {
+                reserved_times_tomorrow.Add(item.Time.ToShortTimeString());
+            }
+        }
+
+        @{
+            string[] reserved_array_tomorrow = reserved_times_tomorrow.ToArray();
+        }
+        @foreach (var time in times)
+        {
+            @if (Array.Exists(reserved_array_tomorrow, el => el.StartsWith(time.Substring(0, 5))))
+            {
+                <div class="column reserved-time">@time</div>
+            }
+            else
+            {
+                <div class="column">@time</div>
+            }
+        }
+    </div>
+    <div id="next_day_content" class="date_content">
+
+        @foreach (var item in Model)
+        {
+            @if (item.Date.ToShortDateString() == DateTime.Now.AddDays(2).ToShortDateString())
+            {
+                reserved_times_next_day.Add(item.Time.ToShortTimeString());
+            }
+        }
+
+        @{
+            string[] reserved_array_next_day = reserved_times_next_day.ToArray();
+        }
+        @foreach (var time in times)
+        {
+            @if (Array.Exists(reserved_array_next_day, el => el.StartsWith(time.Substring(0, 5))))
+            {
+                <div class="column reserved-time">@time</div>
+            }
+            else
+            {
+                <div class="column">@time</div>
+            }
+        }
+    </div>
+</div>
+
+<div>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <p>Välkommen @User.Identity.Name</p>
+        <a asp-controller="Reservation" asp-action="Index">Se dina bokade tider här</a>
+    }
+    else
+    {
+        <a asp-area="Identity" asp-page="/Account/Login">Logga in för att boka din tid</a>
+    }
+</div>

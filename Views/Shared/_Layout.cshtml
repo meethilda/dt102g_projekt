@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- CSS style -->
+    <link rel="stylesheet" href="~/css/main.css">
+    <title>DT102G - Projekt</title>
+</head>
+
+<body>
+    <header>
+        <div class="inner-section">
+            <label class="mobile-burger" for="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
+            <input type="checkbox" name="mobile-menu" id="mobile-menu">
+            <h1><a asp-controller="Home" asp-action="Index">CLAUND <span>- Clean LAUNDry</span></a></h1>
+            <partial name="_LoginPartial" />
+        </div>
+    </header>
+
+
+
+
+    <main>
+        <div class="container">
+            @RenderBody()
+        </div>
+    </main>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2020 - dt102g_projekt - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <!--<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>-->
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

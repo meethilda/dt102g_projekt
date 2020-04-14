@@ -1,0 +1,56 @@
+@model dt102g_projekt.Models.Reservation
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Ändra";
+
+    string[] times = { "09:00-12:00", "12:00-15:00", "15:00-18:00", "18:00-21:00" };
+
+    var timeString = ViewBag.time;
+}
+
+<h1>@ViewData["Title"]</h1>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="reservationId" />
+            <div class="form-group">
+                <label asp-for="Date" class="control-label"></label>
+                <input asp-for="Date" type="date" class="form-control" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Time" class="control-label"></label>
+                <select asp-for="Time">
+                    @foreach (var time in times)
+                    {
+                        @if (time.Substring(0, 5) == timeString)
+                        {
+                            <option value="@time.Substring(0,5)" selected>@time</option>
+                        }
+                        else
+                        {
+                            <option value="@time.Substring(0,5)">@time</option>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="Time" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-for="Created" type="hidden" class="form-control" />
+                <input asp-for="userId" type="hidden" class="form-control" value="@UserManager.GetUserId(User)" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Spara" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Tillbaka till din lista</a>
+</div>
+

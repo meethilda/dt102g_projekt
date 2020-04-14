@@ -1,0 +1,49 @@
+@model dt102g_projekt.Models.Reservation
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Boka tid";
+
+    string[] times = { "09:00-12:00", "12:00-15:00", "15:00-18:00", "18:00-21:00" };
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h4>Boka din tid nedan</h4>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Date" class="control-label">Välj datum</label>
+                <input type="date" asp-for="Date" class="form-control" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Time" class="control-label">Välj tid</label>
+                <!--<input type="time" asp-for="Time" class="form-control" />-->
+                <select asp-for="Time">
+                    @foreach (var time in times)
+                    {
+                        <option value="@time.Substring(0, 5)">@time</option>
+                    }
+                </select>
+                <span asp-validation-for="Time" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-for="Created" type="hidden" class="form-control" value="@DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm")" />
+                <input asp-for="userId" type="hidden" class="form-control" value="@UserManager.GetUserId(User)" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Boka tid" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Till dina bokade tider</a>
+</div>
+
